@@ -10,13 +10,13 @@ package main_package;
  * @author mich
  */
 public class Music extends Media {
-    
+
     private String produttore;
     private String album;
     private String numeroTraccia;
     private String durata;
     private String bitRate;
-    
+
     public Music(String url, String autore, String titolo, String genere, String anno, int idCollezione, String produttore, String album, String numeroTraccia, String durata, String bitrate) {
         super(url, autore, titolo, genere, anno, idCollezione);
         this.produttore = produttore;
@@ -25,7 +25,7 @@ public class Music extends Media {
         this.durata = durata;
         this.bitRate = bitrate;
     }
-    
+
     public Music(Media media, String produttore, String album, String numeroTraccia, String durata, String bitRate) {
         super(media.getUrl(), media.getAutore(), media.getTitolo(), media.getGenere(), media.getAnno(), media.getIdCollezione());
         this.produttore = produttore;
@@ -34,10 +34,8 @@ public class Music extends Media {
         this.durata = durata;
         this.bitRate = bitRate;
     }
-    
-    
-    // GETTER
 
+    // GETTER
     public String getProduttore() {
         return produttore;
     }
@@ -57,9 +55,8 @@ public class Music extends Media {
     public String getBitRate() {
         return bitRate;
     }
-    
-    // SETTER
 
+    // SETTER
     public void setProduttore(String produttore) {
         this.produttore = produttore;
     }
@@ -79,5 +76,30 @@ public class Music extends Media {
     public void setBitRate(String bitRate) {
         this.bitRate = bitRate;
     }
-    
+
+    @Override
+    public String toString() {
+        String produttore = this.produttore;
+        String album = this.album;
+        String numeroTraccia = this.numeroTraccia;
+        String durata = this.durata;
+        String bitRate = this.bitRate;
+        if (produttore.equals("")) {
+            produttore = "-";
+        }
+        if (album.equals("")) {
+            album = "-";
+        }
+        if (numeroTraccia.equals("")) {
+            numeroTraccia = "-";
+        }
+        if (durata.equals("")) {
+            durata = "-";
+        }
+        if (bitRate.equals("")) {
+            bitRate = "-";
+        }
+        return super.toString() + SEPARATOR + produttore + SEPARATOR + album + SEPARATOR + numeroTraccia + SEPARATOR + durata + SEPARATOR + bitRate;
+    }
+
 }

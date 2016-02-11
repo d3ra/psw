@@ -12,7 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Interfaccia il main a qualunque cosa mi dia i dati, db o filesystem
@@ -29,10 +29,16 @@ public class Repository {
     private static final String MUSIC_PATH = "media/music";
     // path per il file di collezioni
     private static final String COLLECTIONS_PATH = "collections";
+    // path per i file di controllo
+    private static final String CONTROL_FILE_PATH = "control";
 
     // separatore formato
-    private static final String SEPARATOR = "\t";
-    
+    public static final String SEPARATOR = "\t";
+
+    private static int filmCounter;
+    private static int ebookCounter;
+    private static int musicCounter;
+
     public Repository() {
         try {
             File media = new File(MEDIA_PATH);
@@ -41,36 +47,125 @@ public class Repository {
             File music = new File(MUSIC_PATH);
             File collectionsDir = new File(COLLECTIONS_PATH);
             File collectionsFile = new File(COLLECTIONS_PATH + "/collections");
-            if(!media.exists()) {
+            File controlDir = new File(CONTROL_FILE_PATH);
+            File controlFile = new File(CONTROL_FILE_PATH + "/control_file");
+            if (!controlDir.exists()) {
+                controlDir.mkdir();
+            }
+            if (!controlFile.exists()) {
+                controlFile.createNewFile();
+                BufferedWriter bw = new BufferedWriter(new FileWriter(controlFile));
+                // rappresentano il numero di film, ebook e music presenti nel sistema
+                bw.write("0" + SEPARATOR + "0" + SEPARATOR + "0");
+                bw.newLine();
+                bw.close();
+                // siccome se entro qui vuol dire che non esiste file di controllo, se esistono film, canzoni o libri li cancello
+                if (films.exists() || ebooks.exists() || music.exists()) {
+                    // cancella tutti i film
+                    String[] entries = films.list();
+                    for (String s : entries) {
+                        File currentFile = new File(films.getPath(), s);
+                        currentFile.delete();
+                    }
+                    // cancella tutti gli ebook
+                    entries = ebooks.list();
+                    for (String s : entries) {
+                        File currentFile = new File(ebooks.getPath(), s);
+                        currentFile.delete();
+                    }
+                    // cancella tutte le canzoni
+                    entries = music.list();
+                    for (String s : entries) {
+                        File currentFile = new File(music.getPath(), s);
+                        currentFile.delete();
+                    }
+                }
+            }
+            if (!media.exists()) {
                 media.mkdir();
             }
-            if(!films.exists()) {
+            if (!films.exists()) {
                 films.mkdir();
             }
-            if(!ebooks.exists()) {
+            if (!ebooks.exists()) {
                 ebooks.mkdir();
             }
-            if(!music.exists()) {
+            if (!music.exists()) {
                 music.mkdir();
             }
-            if(!collectionsDir.exists()) {
+            if (!collectionsDir.exists()) {
                 collectionsDir.mkdir();
             }
             // inizializza il file collections se non esiste già
-            if(!collectionsFile.exists()) {
+            if (!collectionsFile.exists()) {
                 collectionsFile.createNewFile();
                 BufferedWriter bw = new BufferedWriter(new FileWriter(collectionsFile));
                 bw.write("0" + SEPARATOR + "default" + SEPARATOR + "ALL");
                 bw.newLine();
                 bw.close();
             }
+            // setto i valori di controllo
+            BufferedReader br = new BufferedReader(new FileReader(controlFile));
+            String[] split = br.readLine().split(SEPARATOR);
+            filmCounter = Integer.parseInt(split[0]);
+            ebookCounter = Integer.parseInt(split[1]);
+            musicCounter = Integer.parseInt(split[2]);
+            br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
-    public ArrayList<Media> getAll() {
-        ArrayList<Media> result = null;
+    public boolean addMedia(Media media) {
+        if (media == null) {
+            return false;
+        }
+        try {
+            if (media instanceof Film) {
+                media = (Film) media;
+                File newFile = new File(FILMS_PATH + "/film" + filmCounter);
+                if (!newFile.exists()) {
+                    newFile.createNewFile();
+                }
+                BufferedWriter bw = new BufferedWriter(new FileWriter(newFile));
+                bw.write(media.toString());
+                bw.close();
+                filmCounter++;
+                return true;
+            }
+            if (media instanceof Ebook) {
+                media = (Ebook) media;
+                File newFile = new File(EBOOKS_PATH + "/ebook" + ebookCounter);
+                if (!newFile.exists()) {
+                    newFile.createNewFile();
+                }
+                BufferedWriter bw = new BufferedWriter(new FileWriter(newFile));
+                bw.write(media.toString());
+                bw.close();
+                ebookCounter++;
+                return true;
+            }
+            if (media instanceof Music) {
+                media = (Music) media;
+                File newFile = new File(MUSIC_PATH + "/music" + musicCounter);
+                if (!newFile.exists()) {
+                    newFile.createNewFile();
+                }
+                BufferedWriter bw = new BufferedWriter(new FileWriter(newFile));
+                bw.write(media.toString());
+                bw.close();
+                musicCounter++;
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public LinkedList<Media> getAll() {
+        LinkedList<Media> result = null;
         // scorro tutti i file nelle directory e creo oggetti da mandare al main
         try {
             File folder = new File(MEDIA_PATH);
@@ -84,8 +179,8 @@ public class Repository {
         return result;
     }
 
-    private ArrayList<Media> listFilesForFolder(final File folder) throws FileNotFoundException, IOException {
-        ArrayList<Media> result = new ArrayList<Media>();
+    private LinkedList<Media> listFilesForFolder(final File folder) throws FileNotFoundException, IOException {
+        LinkedList<Media> result = new LinkedList<Media>();
         BufferedReader reader;
         for (final File fileEntry : folder.listFiles()) {
             if (fileEntry.isDirectory()) {
@@ -95,15 +190,24 @@ public class Repository {
                 // attributi comuni a ogni media
                 String[] split = reader.readLine().split(SEPARATOR);
                 String url = split[0];
-                String autore = split[1];
-                String titolo = split[2];
+                String titolo = split[1];
+                String autore = split[2];
                 String genere = split[3];
                 String anno = split[4];
                 int idCollezione = Integer.parseInt(split[5]);
                 // controlla il tipo
-                System.out.println("name = " + fileEntry.getParent());
                 //creare un oggetto del giusto tipo
-                switch (fileEntry.getName()) {
+                String type = "";
+                if (fileEntry.getName().contains("ebook")) {
+                    type = "ebooks";
+                }
+                if (fileEntry.getName().contains("film")) {
+                    type = "films";
+                }
+                if (fileEntry.getName().contains("music")) {
+                    type = "music";
+                }
+                switch (type) {
                     case "ebooks": {
                         String casaEditrice = split[6];
                         String formatoFile = split[7];
@@ -129,13 +233,24 @@ public class Repository {
                         String numeroTraccia = split[8];
                         String durata = split[9];
                         String bitRate = split[10];
-                        Music newMusic = new  Music(url, autore, titolo, genere, anno, idCollezione, produttore, album, numeroTraccia, durata, bitRate);
+                        Music newMusic = new Music(url, autore, titolo, genere, anno, idCollezione, produttore, album, numeroTraccia, durata, bitRate);
                         result.add(newMusic);
                     }
+                    break;
                 }
             }
         }
+        System.out.println(result.toString());
         return result;
+    }
+
+    public void onClose() {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(CONTROL_FILE_PATH + "/control_file")));
+            bw.write(filmCounter + SEPARATOR + ebookCounter + SEPARATOR + musicCounter);
+            bw.close();
+        } catch (Exception e) {
+        }
     }
 
 }

@@ -5,7 +5,11 @@
  */
 package main_package;
 
-import java.util.ArrayList;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.util.LinkedList;
+import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -13,19 +17,42 @@ import java.util.ArrayList;
  */
 public class Main extends javax.swing.JFrame {
 
-    public static Repository repository;
-    public static ArrayList<Media> mediaList;
-    
+    private static Repository repository;
+    private static LinkedList<Media> mediaList;
+
     /**
      * Creates new form Main
      */
     public Main() {
         initComponents();
+        setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         //inizializzo repo
         repository = new Repository();
         // mi faccio dare da repo tutti i media salvati
-        repository.getAll();
+        mediaList = repository.getAll();
+        System.out.println("get all " + mediaList.size());
         // per ogni file riempio una riga della tabella (attenzione tipo dinamico media)
+        String type = "";
+        String title;
+        String author;
+        String url;
+        DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+        for (Media media : mediaList) {
+            if (media instanceof Film) {
+                type = "film";
+            }
+            if (media instanceof Ebook) {
+                type = "ebbok";
+            }
+            if (media instanceof Music) {
+                type = "music";
+            }
+            title = media.getTitolo();
+            author = media.getAutore();
+            url = media.getUrl();
+            dtm.addRow(new Object[]{title, author, type, url});
+            System.out.println(title + " " + author + " " + type);
+        }
     }
 
     /**
@@ -177,8 +204,9 @@ public class Main extends javax.swing.JFrame {
         // .
         // .
         // prendiamo quel media e lo mandiamo  a repo
-        System.out.println("newdataaa");
         Media newMedia = newMediaDialog.getData();
+        repository.addMedia(newMedia);
+        // il repo ha aggiunto (o meno) il media! se voglio farci qualcos altro lo devo fare qui sotto
     }//GEN-LAST:event_newMediaMenuActionPerformed
 
     /**
@@ -208,15 +236,23 @@ public class Main extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        Main thisProcess = new Main();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                thisProcess.setVisible(true);
             }
         });
-        
+        thisProcess.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                repository.onClose();
+                ((JFrame) e.getComponent()).dispose();
+            }
+        });
+
     }
-    
+
     public boolean createNewCollection(/*tipo dei media nella collezione, no collezioni miste*/) {
         return true;
     }

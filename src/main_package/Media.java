@@ -11,6 +11,9 @@ package main_package;
  */
 public class Media {
 
+    //magari sta roba è meglio metterla in una classe comune siccome la usa anche repository
+    public static final String SEPARATOR = "\t";
+
     private String url;
     private String autore;
     private String titolo;
@@ -47,7 +50,7 @@ public class Media {
     public String getAnno() {
         return anno;
     }
-    
+
     public int getIdCollezione() {
         return this.idCollezione;
     }
@@ -72,9 +75,22 @@ public class Media {
     public void setAnno(String anno) {
         this.anno = anno;
     }
-    
+
     public void setIdCollezione(int idCollezione) {
         this.idCollezione = idCollezione;
+    }
+
+    @Override
+    public String toString() {
+        String genere = this.genere;
+        String anno = this.anno;
+        if (genere.equals("")) {
+            genere = "-";
+        }
+        if (anno.equals("")) {
+            anno = "-";
+        }
+        return this.url + SEPARATOR + this.titolo + SEPARATOR + this.autore + SEPARATOR + genere + SEPARATOR + anno + SEPARATOR + this.idCollezione;
     }
 
 }

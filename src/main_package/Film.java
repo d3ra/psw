@@ -10,13 +10,13 @@ package main_package;
  * @author mich
  */
 public class Film extends Media {
-    
+
     private String regista;
     private String attori;
     private String descrizione;
     private String commenti;
     private String lingua;
-    
+
     public Film(String url, String autore, String titolo, String genere, String anno, int idCollezione, String regista, String attori, String descrizione, String commenti, String lingua) {
         super(url, autore, titolo, genere, anno, idCollezione);
         this.regista = regista;
@@ -25,7 +25,7 @@ public class Film extends Media {
         this.commenti = commenti;
         this.lingua = lingua;
     }
-    
+
     public Film(Media media, String regista, String attori, String descrizione, String commenti, String lingua) {
         super(media.getUrl(), media.getAutore(), media.getTitolo(), media.getGenere(), media.getAnno(), media.getIdCollezione());
         this.regista = regista;
@@ -34,9 +34,8 @@ public class Film extends Media {
         this.commenti = commenti;
         this.lingua = lingua;
     }
-    
-    // GETTER
 
+    // GETTER
     public String getRegista() {
         return regista;
     }
@@ -56,9 +55,8 @@ public class Film extends Media {
     public String getLingua() {
         return lingua;
     }
-    
-    // SETTER
 
+    // SETTER
     public void setRegista(String regista) {
         this.regista = regista;
     }
@@ -78,5 +76,30 @@ public class Film extends Media {
     public void setLingua(String lingua) {
         this.lingua = lingua;
     }
-    
+
+    @Override
+    public String toString() {
+        String regista = this.regista;
+        String attori = this.attori;
+        String descrizione = this.descrizione;
+        String commenti = this.commenti;
+        String lingua = this.lingua;
+        if (regista.equals("")) {
+            regista = "-";
+        }
+        if (attori.equals("")) {
+            attori = "-";
+        }
+        if (descrizione.equals("")) {
+            descrizione = "-";
+        }
+        if (commenti.equals("")) {
+            commenti = "-";
+        }
+        if (lingua.equals("")) {
+            lingua = "-";
+        }
+        return super.toString() + SEPARATOR + regista + SEPARATOR + attori + SEPARATOR + descrizione + SEPARATOR + commenti + SEPARATOR + lingua;
+    }
+
 }
