@@ -26,6 +26,15 @@ public class Film extends Media {
         this.lingua = lingua;
     }
     
+    public Film(Media media, String regista, String attori, String descrizione, String commenti, String lingua) {
+        super(media.getUrl(), media.getAutore(), media.getTitolo(), media.getGenere(), media.getAnno(), media.getIdCollezione());
+        this.regista = regista;
+        this.attori = attori;
+        this.descrizione = descrizione;
+        this.commenti = commenti;
+        this.lingua = lingua;
+    }
+    
     // GETTER
 
     public String getRegista() {

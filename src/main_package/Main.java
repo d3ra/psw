@@ -45,6 +45,8 @@ public class Main extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -124,6 +126,18 @@ public class Main extends javax.swing.JFrame {
         );
 
         jMenu1.setText("File");
+
+        jMenuItem1.setText("New Media...");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newMediaMenuActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("New Collection...");
+        jMenu1.add(jMenuItem2);
+
         jMenuBar1.add(jMenu1);
 
         jMenu2.setText("Edit");
@@ -153,6 +167,19 @@ public class Main extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void newMediaMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMediaMenuActionPerformed
+        // arrivo qui se sto voglio creare un nuovo media percui lancio una form che mi faccia inserire i dati, creo il nuovo oggetto e lo mando a repo che lo inserirà nel file system
+        NewMediaDialog newMediaDialog = new NewMediaDialog(this, true);
+        newMediaDialog.setVisible(true);
+        // l'utente crea un nuovo media
+        // .
+        // .
+        // .
+        // prendiamo quel media e lo mandiamo  a repo
+        System.out.println("newdataaa");
+        Media newMedia = newMediaDialog.getData();
+    }//GEN-LAST:event_newMediaMenuActionPerformed
 
     /**
      * @param args the command line arguments
@@ -199,6 +226,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

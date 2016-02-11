@@ -9,7 +9,7 @@ package main_package;
  *
  * @author mich
  */
-public abstract class Media {
+public class Media {
 
     private String url;
     private String autore;

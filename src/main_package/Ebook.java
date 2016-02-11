@@ -22,6 +22,13 @@ public class Ebook extends Media {
         this.lingua = lingua;
     }
     
+    public Ebook(Media media, String casaEditrice, String formatoFile, String lingua) {
+        super(media.getUrl(), media.getAutore(), media.getTitolo(), media.getGenere(), media.getAnno(), media.getIdCollezione());
+        this.casaEditrice = casaEditrice;
+        this.formatoFile = formatoFile;
+        this.lingua = lingua;
+    }
+    
     // GETTER
 
     public String getCasaEditrice() {

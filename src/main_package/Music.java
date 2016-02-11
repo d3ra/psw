@@ -26,6 +26,16 @@ public class Music extends Media {
         this.bitRate = bitrate;
     }
     
+    public Music(Media media, String produttore, String album, String numeroTraccia, String durata, String bitRate) {
+        super(media.getUrl(), media.getAutore(), media.getTitolo(), media.getGenere(), media.getAnno(), media.getIdCollezione());
+        this.produttore = produttore;
+        this.album = album;
+        this.numeroTraccia = numeroTraccia;
+        this.durata = durata;
+        this.bitRate = bitRate;
+    }
+    
+    
     // GETTER
 
     public String getProduttore() {
