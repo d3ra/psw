@@ -168,38 +168,30 @@ public class Repository {
 
     /*TODO ritorna null se non trova niente, controllare in Main*/
     public LinkedList<Media> search(String title, boolean isFilmChecked, boolean isEbookChecked, boolean isAudioChecked, String genere, String fromYear, String toYear) {
-        LinkedList<Media> temp = null;
+        LinkedList<Media> temp = new LinkedList<Media>();
         // se non c'è ricerca avanzata o l'utente ha selezionato tutti i checkbox -> getAll()
         if (isFilmChecked && isEbookChecked && isAudioChecked) {
             temp = getAll();
-            System.out.println("prendo tutto");
         } else {
             if (isFilmChecked) {
-                temp.addAll(getMedias("film"));
-                System.out.println("prendo films");
+                temp.addAll(getMedias("films"));
             }
             if (isEbookChecked) {
-                temp.addAll(getMedias("ebook"));
-                System.out.println("prendo ebooks");
+                temp.addAll(getMedias("ebooks"));
             }
             if (isAudioChecked) {
                 temp.addAll(getMedias("audio"));
-                System.out.println("prendo audios");
             }
         }
-        System.out.println("1) temp ha " + temp.size() + " elementi");
         // non ho trovato nessun media -> non ci sono media salvati
         if (temp.size() == 0) {
             return null;
         }
         int from = Integer.parseInt(fromYear);
         int to = Integer.parseInt(toYear);
-        int anno = -1;
         // di tutti i media che ho trovato mi interessano solo quelli che soddisfano le condizioni
         LinkedList<Media> support = new LinkedList<Media>();
-        System.out.println("2) support per ora ha " + support.size() + " elementi");
         // controllo solo il nome
-        System.out.println("per ogni elemento in temp controllo il titolo");
         for (Media media : temp) {
             // preparo support
             if (title.equals("")) {
@@ -211,33 +203,28 @@ public class Repository {
                 }
             }
         }
-        System.out.println("3) support ora ha " + support.size() + " elementi");
         // controllo il size di support
         if (support.size() == 0) {
             return null;
         }
         clearResult();
-        System.out.println("4) result ha " + result.size() + " elementi");
         // size > 0 vuol dire che ho un po di media che rispettano il requisito del nome
-        System.out.println("per ogni media in support controllo il genere e l'anno");
         for (Media media : support) {
+            int anno = -1;
             // controllo il genere e l'anno
             if (genere.equalsIgnoreCase("all")) {
-                System.out.println("4.1) genere equals all");
                 // va bene qualsiasi genere, controllo l'anno
                 String mediaAnno = media.getAnno();
                 // vuol dire che nella scheda del media è salvato un anno
                 if (!mediaAnno.equals("-")) {
                     anno = Integer.parseInt(mediaAnno);
                 } else {
-                    System.out.println("4.2) SONO QUIIII");
                     // se nella scheda non è presente l'anno e anno richiesto 0 -> 2016 ritorno comunque
                     if (from == 0 && to == 2016) {
-                        System.out.println("aggiungo a result");
                         result.add(media);
+                        
                     }
                 }
-                System.out.println("4.3) is " + anno + " compreso tra " + from + " e " + to + "?");
                 // verifica condizione anno
                 if (anno >= from && anno <= to) {
                     result.add(media);
@@ -260,7 +247,7 @@ public class Repository {
                             }
                         }
                         // verifica condizione anno
-                        if (anno >= to && anno <= from) {
+                        if (anno >= from && anno <= to) {
                             result.add(media);
                         }
                     }
@@ -289,6 +276,8 @@ public class Repository {
     private LinkedList<Media> getMedias(String type) {
         LinkedList<Media> result = null;
         // scorro tutti i file nelle directory e creo oggetti da mandare al main
+        System.out.println("type = " + type);
+        System.out.println("parh = " + MEDIA_PATH + "/" + type);
         try {
             File folder = new File(MEDIA_PATH + "/" + type);
             clearResult();

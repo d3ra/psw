@@ -7,7 +7,10 @@ package main_package;
 
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Vector;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -43,6 +46,37 @@ public class Main extends javax.swing.JFrame {
         mediaList = repository.getAll();
         // per ogni file riempio una riga della tabella (attenzione tipo dinamico media)
         updateView();
+        dynamicGenreSelection();
+        // aggiungo actionListener
+        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                genreCheckBoxActionPerformed(evt);
+            }
+        });
+        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                genreCheckBoxActionPerformed(evt);
+            }
+        });
+    }
+
+    private void dynamicGenreSelection() {
+        boolean isFilmChecked = jCheckBox1.isSelected();
+        boolean isEbookChecked = jCheckBox2.isSelected();
+        boolean isAudioChecked = jCheckBox3.isSelected();
+        Vector comboBoxItems = new Vector();
+        comboBoxItems.add("ALL");
+        if (isFilmChecked) {
+            comboBoxItems.addAll(Arrays.asList(generiFilm));
+        }
+        if (isEbookChecked) {
+            comboBoxItems.addAll(Arrays.asList(generiEbook));
+        }
+        if (isAudioChecked) {
+            comboBoxItems.addAll(Arrays.asList(generiAudio));
+        }
+        final DefaultComboBoxModel model = new DefaultComboBoxModel(comboBoxItems);
+        jComboBox1.setModel(model);
     }
 
     // carica nella tabella i media presenti nella mediaList
@@ -71,7 +105,7 @@ public class Main extends javax.swing.JFrame {
         }
         return true;
     }
-    
+
     // pulisce la tabella
     private void clearView() {
         DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
@@ -136,6 +170,11 @@ public class Main extends javax.swing.JFrame {
 
         jCheckBox1.setSelected(true);
         jCheckBox1.setText("Film");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                genreCheckBoxActionPerformed(evt);
+            }
+        });
 
         jCheckBox2.setSelected(true);
         jCheckBox2.setText("Ebook");
@@ -365,8 +404,44 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_searchButtonHandler
 
     private void advSearchButtonHandler(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advSearchButtonHandler
-        // TODO add your handling code here:
+        String title = jTextField1.getText();
+        // no title = all
+        String genre = jComboBox1.getSelectedItem().toString();
+        String fromYear = jTextField2.getText();
+        String toYear = jTextField3.getText();
+        // controlli sull'anno
+        if (fromYear.equals("")) {
+            fromYear = "0";
+        }
+        if (toYear.equals("")) {
+            toYear = "2016";
+        }
+        if (Integer.parseInt(fromYear) > Integer.parseInt(toYear)) {
+            JOptionPane.showMessageDialog(this, "fromYear > toYear", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        LinkedList temp = repository.search(title, jCheckBox1.isSelected(), jCheckBox2.isSelected(), jCheckBox3.isSelected(), genre, fromYear, toYear);
+        // tratto i risultati
+        if (temp == null) {
+            // no risultati
+            JOptionPane.showMessageDialog(this, "Error from research", "error", JOptionPane.ERROR_MESSAGE);
+            jTextField1.setText("");
+            return;
+        }
+        if (temp.size() == 0) {
+            JOptionPane.showMessageDialog(this, "No results", "error", JOptionPane.ERROR_MESSAGE);
+            jTextField1.setText("");
+            return;
+        }
+        // se ci sono risultati
+        mediaList = temp;
+        jTextField1.setText("");
+        updateView();
     }//GEN-LAST:event_advSearchButtonHandler
+
+    private void genreCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_genreCheckBoxActionPerformed
+        dynamicGenreSelection();
+    }//GEN-LAST:event_genreCheckBoxActionPerformed
 
     /**
      * @param args the command line arguments
