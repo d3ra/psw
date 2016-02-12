@@ -9,6 +9,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.LinkedList;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -16,6 +17,16 @@ import javax.swing.table.DefaultTableModel;
  * @author mich
  */
 public class Main extends javax.swing.JFrame {
+
+    // array di generi
+    private static final String[] generiFilm = {"Animazione", "Avventura", "Azione", "Biografico", "Classici", "Comico", "Commedia", "Demenziale",
+        "Documentario", "Dramma", "Erotico", "Fantascienza", "Fantasy", "Giallo", "Grottesco", "Guerra", "Horror", "Musical", "Noir", "Poliziesco",
+        "Sentimentale", "Storico", "Thriller", "Western"};
+    private static final String[] generiEbook = {"Autobiografia", "Avventura", "Bambini", "Biografia", "Classico", "Comico", "Commedia", "Critica",
+        "Diario", "Drammatico", "Fantascienza", "Fantasy", "Fiaba", "Fumetto", "Giallo", "Guida", "Horror", "Manuale", "Mitologia", "Narrativa",
+        "Noir", "Poesia", "Poliziesco", "Racconto", "Romanzo", "Rosa", "Saggio", "Satira", "Scientifico", "Storico", "Thiller", "Teatro"};
+    private static final String[] generiAudio = {"Blues", "Classica", "Country", "Dance", "Folk", "Gospel", "Hardcore", "Hip-Hop", "Industrial",
+        "Jazz", "Liscio", "Metal", "Pop", "Punk", "Rock'n'roll"};
 
     private static Repository repository;
     private static LinkedList<Media> mediaList;
@@ -33,7 +44,7 @@ public class Main extends javax.swing.JFrame {
         // per ogni file riempio una riga della tabella (attenzione tipo dinamico media)
         updateView();
     }
-    
+
     // carica nella tabella i media presenti nella mediaList
     private boolean updateView() {
         String type = "";
@@ -41,6 +52,8 @@ public class Main extends javax.swing.JFrame {
         String author;
         String url;
         DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+        // pulisce la tabella
+        clearView();
         for (Media media : mediaList) {
             if (media instanceof Film) {
                 type = "film";
@@ -57,6 +70,16 @@ public class Main extends javax.swing.JFrame {
             dtm.addRow(new Object[]{title, author, type, url});
         }
         return true;
+    }
+    
+    // pulisce la tabella
+    private void clearView() {
+        DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+        if (dtm.getRowCount() > 0) {
+            for (int i = dtm.getRowCount() - 1; i > -1; i--) {
+                dtm.removeRow(i);
+            }
+        }
     }
 
     /**
@@ -77,6 +100,13 @@ public class Main extends javax.swing.JFrame {
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox();
+        jLabel5 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -94,6 +124,11 @@ public class Main extends javax.swing.JFrame {
         jLabel1.setText("Ricerca:");
 
         jButton1.setText("Search");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonHandler(evt);
+            }
+        });
 
         jLabel2.setText("Ricerca Avanzata:");
 
@@ -108,27 +143,57 @@ public class Main extends javax.swing.JFrame {
         jCheckBox3.setSelected(true);
         jCheckBox3.setText("Audio");
 
+        jLabel4.setText("Genere:");
+
+        jLabel5.setText("Anno: tra");
+
+        jTextField2.setText("2015");
+
+        jLabel6.setText("e");
+
+        jTextField3.setText("2016");
+
+        jButton2.setText("Adv Search");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                advSearchButtonHandler(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1))
-                    .addComponent(jLabel2)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jCheckBox2)
-                            .addComponent(jCheckBox1)
-                            .addComponent(jCheckBox3))))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton2)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel1)
+                        .addComponent(jLabel2)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel3)
+                                .addComponent(jLabel4))
+                            .addGap(18, 18, 18)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jCheckBox2)
+                                .addComponent(jCheckBox1)
+                                .addComponent(jCheckBox3)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGap(18, 18, 18)
+                            .addComponent(jButton1))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel5)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel6)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -149,7 +214,19 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jCheckBox2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jCheckBox3)
-                .addContainerGap(482, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel5)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6)
+                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jButton2)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(204, 255, 204));
@@ -185,7 +262,7 @@ public class Main extends javax.swing.JFrame {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 932, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 939, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,6 +339,35 @@ public class Main extends javax.swing.JFrame {
         // il repo ha aggiunto (o meno) il media! se voglio farci qualcos altro lo devo fare qui sotto
     }//GEN-LAST:event_newMediaMenuActionPerformed
 
+    private void searchButtonHandler(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonHandler
+        String title = jTextField1.getText();
+        if (title.equals("")) {
+            JOptionPane.showMessageDialog(this, "Insert something to search for", "error", JOptionPane.ERROR_MESSAGE);
+            jTextField1.setText("");
+            return;
+        }
+        LinkedList temp = repository.search(title, true, true, true, "ALL", "0", "2016");
+        if (temp == null) {
+            // no risultati
+            JOptionPane.showMessageDialog(this, "Error from research", "error", JOptionPane.ERROR_MESSAGE);
+            jTextField1.setText("");
+            return;
+        }
+        if (temp.size() == 0) {
+            JOptionPane.showMessageDialog(this, "No results", "error", JOptionPane.ERROR_MESSAGE);
+            jTextField1.setText("");
+            return;
+        }
+        // se ci sono risultati
+        mediaList = temp;
+        jTextField1.setText("");
+        updateView();
+    }//GEN-LAST:event_searchButtonHandler
+
+    private void advSearchButtonHandler(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_advSearchButtonHandler
+        // TODO add your handling code here:
+    }//GEN-LAST:event_advSearchButtonHandler
+
     /**
      * @param args the command line arguments
      */
@@ -312,12 +418,17 @@ public class Main extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
@@ -329,5 +440,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }

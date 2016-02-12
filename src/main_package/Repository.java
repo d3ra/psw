@@ -38,7 +38,7 @@ public class Repository {
     private static int filmCounter;
     private static int ebookCounter;
     private static int audioCounter;
-    
+
     private LinkedList<Media> result = new LinkedList<Media>();
 
     public Repository() {
@@ -166,21 +166,146 @@ public class Repository {
         return false;
     }
 
+    /*TODO ritorna null se non trova niente, controllare in Main*/
+    public LinkedList<Media> search(String title, boolean isFilmChecked, boolean isEbookChecked, boolean isAudioChecked, String genere, String fromYear, String toYear) {
+        LinkedList<Media> temp = null;
+        // se non c'è ricerca avanzata o l'utente ha selezionato tutti i checkbox -> getAll()
+        if (isFilmChecked && isEbookChecked && isAudioChecked) {
+            temp = getAll();
+            System.out.println("prendo tutto");
+        } else {
+            if (isFilmChecked) {
+                temp.addAll(getMedias("film"));
+                System.out.println("prendo films");
+            }
+            if (isEbookChecked) {
+                temp.addAll(getMedias("ebook"));
+                System.out.println("prendo ebooks");
+            }
+            if (isAudioChecked) {
+                temp.addAll(getMedias("audio"));
+                System.out.println("prendo audios");
+            }
+        }
+        System.out.println("1) temp ha " + temp.size() + " elementi");
+        // non ho trovato nessun media -> non ci sono media salvati
+        if (temp.size() == 0) {
+            return null;
+        }
+        int from = Integer.parseInt(fromYear);
+        int to = Integer.parseInt(toYear);
+        int anno = -1;
+        // di tutti i media che ho trovato mi interessano solo quelli che soddisfano le condizioni
+        LinkedList<Media> support = new LinkedList<Media>();
+        System.out.println("2) support per ora ha " + support.size() + " elementi");
+        // controllo solo il nome
+        System.out.println("per ogni elemento in temp controllo il titolo");
+        for (Media media : temp) {
+            // preparo support
+            if (title.equals("")) {
+                // no titolo
+                support.add(media);
+            } else {
+                if (media.getTitolo().equalsIgnoreCase(title)) {
+                    support.add(media);
+                }
+            }
+        }
+        System.out.println("3) support ora ha " + support.size() + " elementi");
+        // controllo il size di support
+        if (support.size() == 0) {
+            return null;
+        }
+        clearResult();
+        System.out.println("4) result ha " + result.size() + " elementi");
+        // size > 0 vuol dire che ho un po di media che rispettano il requisito del nome
+        System.out.println("per ogni media in support controllo il genere e l'anno");
+        for (Media media : support) {
+            // controllo il genere e l'anno
+            if (genere.equalsIgnoreCase("all")) {
+                System.out.println("4.1) genere equals all");
+                // va bene qualsiasi genere, controllo l'anno
+                String mediaAnno = media.getAnno();
+                // vuol dire che nella scheda del media è salvato un anno
+                if (!mediaAnno.equals("-")) {
+                    anno = Integer.parseInt(mediaAnno);
+                } else {
+                    System.out.println("4.2) SONO QUIIII");
+                    // se nella scheda non è presente l'anno e anno richiesto 0 -> 2016 ritorno comunque
+                    if (from == 0 && to == 2016) {
+                        System.out.println("aggiungo a result");
+                        result.add(media);
+                    }
+                }
+                System.out.println("4.3) is " + anno + " compreso tra " + from + " e " + to + "?");
+                // verifica condizione anno
+                if (anno >= from && anno <= to) {
+                    result.add(media);
+                }
+            } else {
+                // controllo il genere, e poi l'anno
+                String mediaGenere = media.getGenere();
+                // se c'è un genere
+                if (!mediaGenere.equals("-")) {
+                    // se è uguale a quello richiesto
+                    if (genere.equalsIgnoreCase(mediaGenere)) {
+                        String mediaAnno = media.getAnno();
+                        // vuol dire che nella scheda del media è salvato un anno
+                        if (!mediaAnno.equals("-")) {
+                            anno = Integer.parseInt(mediaAnno);
+                        } else {
+                            // se nella scheda non è presente l'anno e anno richiesto 0 -> 2016 ritorno comunque
+                            if (to == 0 && from == 2016) {
+                                result.add(media);
+                            }
+                        }
+                        // verifica condizione anno
+                        if (anno >= to && anno <= from) {
+                            result.add(media);
+                        }
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     public LinkedList<Media> getAll() {
         LinkedList<Media> result = null;
         // scorro tutti i file nelle directory e creo oggetti da mandare al main
         try {
             File folder = new File(MEDIA_PATH);
+            clearResult();
             result = listFilesForFolder(folder);
             // se non ci sono media mi ritorna una lista vuota
         } catch (Exception e) {
             // errore nel leggere i file o nel creare oggetti
             e.printStackTrace();
         }
-
         return result;
     }
-    
+
+    // type deve essere: film, ebook o audio
+    private LinkedList<Media> getMedias(String type) {
+        LinkedList<Media> result = null;
+        // scorro tutti i file nelle directory e creo oggetti da mandare al main
+        try {
+            File folder = new File(MEDIA_PATH + "/" + type);
+            clearResult();
+            result = listFilesForFolder(folder);
+            // se non ci sono media mi ritorna una lista vuota
+        } catch (Exception e) {
+            // errore nel leggere i file o nel creare oggetti
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    // pulisce la variabile comune result prima che venga riutilizzata
+    private void clearResult() {
+        result = new LinkedList<Media>();
+    }
+
     private LinkedList<Media> listFilesForFolder(final File folder) throws FileNotFoundException, IOException {
         BufferedReader reader;
         for (final File fileEntry : folder.listFiles()) {
