@@ -21,6 +21,17 @@ public class NewMediaDialog extends javax.swing.JDialog {
     public NewMediaDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        // binda il comportamento ai bottoni per creare media
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreateButtonClickedHandler(evt);
+            }
+        });
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreateButtonClickedHandler(evt);
+            }
+        });
         /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -114,7 +125,7 @@ public class NewMediaDialog extends javax.swing.JDialog {
         jTextField3.setText("----");
         jTextField3.setEnabled(false);
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Film", "Ebook", "Music" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Film", "Ebook", "Audio" }));
 
         jLabel6.setText("Genere:");
 
@@ -203,11 +214,6 @@ public class NewMediaDialog extends javax.swing.JDialog {
         jLabel17.setText("Lingua:");
 
         jButton3.setText("Create");
-		jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CreateButtonClickedHandler(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -226,7 +232,7 @@ public class NewMediaDialog extends javax.swing.JDialog {
                             .addComponent(jTextField11)
                             .addComponent(jTextField12, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)))
                     .addComponent(jButton3))
-                .addContainerGap(282, Short.MAX_VALUE))
+                .addContainerGap(308, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -246,7 +252,7 @@ public class NewMediaDialog extends javax.swing.JDialog {
                 .addContainerGap(262, Short.MAX_VALUE))
         );
 
-        jLabel10.setText("MUSIC PANEL");
+        jLabel10.setText("AUDIO PANEL");
 
         jLabel18.setText("Produttore:");
 
@@ -259,11 +265,6 @@ public class NewMediaDialog extends javax.swing.JDialog {
         jLabel22.setText("Bitrate:");
 
         jButton4.setText("Create");
-		jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                CreateButtonClickedHandler(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -474,7 +475,7 @@ public class NewMediaDialog extends javax.swing.JDialog {
                 jPanel4.setVisible(false);
             }
             break;
-            case "Music": {
+            case "Audio": {
                 jPanel1.setVisible(false);
                 jPanel2.setVisible(false);
                 jPanel3.setVisible(true);
@@ -503,13 +504,13 @@ public class NewMediaDialog extends javax.swing.JDialog {
                 newMedia = new Ebook(newMedia, casaEditrice, "----", lingua);
             }
             break;
-            case "Music": {
+            case "Audio": {
                 String produttore = jTextField17.getText();
                 String album = jTextField16.getText();
                 String numeroTraccia = jTextField13.getText();
                 String durata = jTextField14.getText();
                 String bitRate = jTextField15.getText();
-                newMedia = new Music(newMedia, produttore, album, numeroTraccia, durata, bitRate);
+                newMedia = new Audio(newMedia, produttore, album, numeroTraccia, durata, bitRate);
             }
             break;
         }

@@ -9,7 +9,7 @@ package main_package;
  *
  * @author mich
  */
-public class Music extends Media {
+public class Audio extends Media {
 
     private String produttore;
     private String album;
@@ -17,7 +17,7 @@ public class Music extends Media {
     private String durata;
     private String bitRate;
 
-    public Music(String url, String autore, String titolo, String genere, String anno, int idCollezione, String produttore, String album, String numeroTraccia, String durata, String bitrate) {
+    public Audio(String url, String autore, String titolo, String genere, String anno, int idCollezione, String produttore, String album, String numeroTraccia, String durata, String bitrate) {
         super(url, autore, titolo, genere, anno, idCollezione);
         this.produttore = produttore;
         this.album = album;
@@ -26,7 +26,7 @@ public class Music extends Media {
         this.bitRate = bitrate;
     }
 
-    public Music(Media media, String produttore, String album, String numeroTraccia, String durata, String bitRate) {
+    public Audio(Media media, String produttore, String album, String numeroTraccia, String durata, String bitRate) {
         super(media.getUrl(), media.getAutore(), media.getTitolo(), media.getGenere(), media.getAnno(), media.getIdCollezione());
         this.produttore = produttore;
         this.album = album;

@@ -26,7 +26,7 @@ public class Repository {
     // funziona solo su windows, testare su linux
     private static final String FILMS_PATH = "media/films";
     private static final String EBOOKS_PATH = "media/ebooks";
-    private static final String MUSIC_PATH = "media/music";
+    private static final String AUDIO_PATH = "media/audio";
     // path per il file di collezioni
     private static final String COLLECTIONS_PATH = "collections";
     // path per i file di controllo
@@ -37,14 +37,16 @@ public class Repository {
 
     private static int filmCounter;
     private static int ebookCounter;
-    private static int musicCounter;
+    private static int audioCounter;
+    
+    private LinkedList<Media> result = new LinkedList<Media>();
 
     public Repository() {
         try {
             File media = new File(MEDIA_PATH);
             File films = new File(FILMS_PATH);
             File ebooks = new File(EBOOKS_PATH);
-            File music = new File(MUSIC_PATH);
+            File audio = new File(AUDIO_PATH);
             File collectionsDir = new File(COLLECTIONS_PATH);
             File collectionsFile = new File(COLLECTIONS_PATH + "/collections");
             File controlDir = new File(CONTROL_FILE_PATH);
@@ -55,12 +57,12 @@ public class Repository {
             if (!controlFile.exists()) {
                 controlFile.createNewFile();
                 BufferedWriter bw = new BufferedWriter(new FileWriter(controlFile));
-                // rappresentano il numero di film, ebook e music presenti nel sistema
+                // rappresentano il numero di film, ebook e audio presenti nel sistema
                 bw.write("0" + SEPARATOR + "0" + SEPARATOR + "0");
                 bw.newLine();
                 bw.close();
                 // siccome se entro qui vuol dire che non esiste file di controllo, se esistono film, canzoni o libri li cancello
-                if (films.exists() || ebooks.exists() || music.exists()) {
+                if (films.exists() || ebooks.exists() || audio.exists()) {
                     // cancella tutti i film
                     String[] entries = films.list();
                     for (String s : entries) {
@@ -74,9 +76,9 @@ public class Repository {
                         currentFile.delete();
                     }
                     // cancella tutte le canzoni
-                    entries = music.list();
+                    entries = audio.list();
                     for (String s : entries) {
-                        File currentFile = new File(music.getPath(), s);
+                        File currentFile = new File(audio.getPath(), s);
                         currentFile.delete();
                     }
                 }
@@ -90,8 +92,8 @@ public class Repository {
             if (!ebooks.exists()) {
                 ebooks.mkdir();
             }
-            if (!music.exists()) {
-                music.mkdir();
+            if (!audio.exists()) {
+                audio.mkdir();
             }
             if (!collectionsDir.exists()) {
                 collectionsDir.mkdir();
@@ -109,7 +111,7 @@ public class Repository {
             String[] split = br.readLine().split(SEPARATOR);
             filmCounter = Integer.parseInt(split[0]);
             ebookCounter = Integer.parseInt(split[1]);
-            musicCounter = Integer.parseInt(split[2]);
+            audioCounter = Integer.parseInt(split[2]);
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,16 +148,16 @@ public class Repository {
                 ebookCounter++;
                 return true;
             }
-            if (media instanceof Music) {
-                media = (Music) media;
-                File newFile = new File(MUSIC_PATH + "/music" + musicCounter);
+            if (media instanceof Audio) {
+                media = (Audio) media;
+                File newFile = new File(AUDIO_PATH + "/audio" + audioCounter);
                 if (!newFile.exists()) {
                     newFile.createNewFile();
                 }
                 BufferedWriter bw = new BufferedWriter(new FileWriter(newFile));
                 bw.write(media.toString());
                 bw.close();
-                musicCounter++;
+                audioCounter++;
                 return true;
             }
         } catch (Exception e) {
@@ -178,11 +180,11 @@ public class Repository {
 
         return result;
     }
-
+    
     private LinkedList<Media> listFilesForFolder(final File folder) throws FileNotFoundException, IOException {
-        LinkedList<Media> result = new LinkedList<Media>();
         BufferedReader reader;
         for (final File fileEntry : folder.listFiles()) {
+            LinkedList<Media> temp = new LinkedList<Media>();
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry);
             } else {
@@ -204,8 +206,8 @@ public class Repository {
                 if (fileEntry.getName().contains("film")) {
                     type = "films";
                 }
-                if (fileEntry.getName().contains("music")) {
-                    type = "music";
+                if (fileEntry.getName().contains("audio")) {
+                    type = "audio";
                 }
                 switch (type) {
                     case "ebooks": {
@@ -213,7 +215,7 @@ public class Repository {
                         String formatoFile = split[7];
                         String lingua = split[8];
                         Ebook newEbook = new Ebook(url, autore, titolo, genere, anno, idCollezione, casaEditrice, formatoFile, lingua);
-                        result.add(newEbook);
+                        temp.add(newEbook);
                     }
                     break;
                     case "films": {
@@ -223,31 +225,31 @@ public class Repository {
                         String commenti = split[9];
                         String lingua = split[10];
                         Film newFilm = new Film(url, autore, titolo, genere, anno, idCollezione, regista, attori, descrizione, commenti, lingua);
-                        result.add(newFilm);
+                        temp.add(newFilm);
 
                     }
                     break;
-                    case "music": {
+                    case "audio": {
                         String produttore = split[6];
                         String album = split[7];
                         String numeroTraccia = split[8];
                         String durata = split[9];
                         String bitRate = split[10];
-                        Music newMusic = new Music(url, autore, titolo, genere, anno, idCollezione, produttore, album, numeroTraccia, durata, bitRate);
-                        result.add(newMusic);
+                        Audio newAudio = new Audio(url, autore, titolo, genere, anno, idCollezione, produttore, album, numeroTraccia, durata, bitRate);
+                        temp.add(newAudio);
                     }
                     break;
                 }
             }
+            result.addAll(temp);
         }
-        System.out.println(result.toString());
         return result;
     }
 
     public void onClose() {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter(new File(CONTROL_FILE_PATH + "/control_file")));
-            bw.write(filmCounter + SEPARATOR + ebookCounter + SEPARATOR + musicCounter);
+            bw.write(filmCounter + SEPARATOR + ebookCounter + SEPARATOR + audioCounter);
             bw.close();
         } catch (Exception e) {
         }

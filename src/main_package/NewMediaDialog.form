@@ -149,7 +149,7 @@
           <StringArray count="3">
             <StringItem index="0" value="Film"/>
             <StringItem index="1" value="Ebook"/>
-            <StringItem index="2" value="Music"/>
+            <StringItem index="2" value="Audio"/>
           </StringArray>
         </Property>
       </Properties>
@@ -473,7 +473,7 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="jLabel10">
               <Properties>
-                <Property name="text" type="java.lang.String" value="MUSIC PANEL"/>
+                <Property name="text" type="java.lang.String" value="AUDIO PANEL"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JLabel" name="jLabel18">
