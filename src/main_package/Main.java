@@ -52,9 +52,9 @@ public class Main extends javax.swing.JFrame {
         // per ogni file riempio una riga della tabella (attenzione tipo dinamico media)
         updateView();
         dynamicGenreSelection();
-        
+
         focused = new Media();
-        
+
         // <editor-fold defaultstate="collapsed" desc="Action Listeners">
         // checkbox
         jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
@@ -975,10 +975,11 @@ public class Main extends javax.swing.JFrame {
         Media result = modifyMediaDialog.getData();
         int index = -1;
         for (Media media : mediaList) {
-            if(media.getTitolo().equals(result.getTitolo()))
+            if (media.getTitolo().equals(result.getTitolo())) {
                 index = mediaList.indexOf(media);
+            }
         }
-        if(index >= 0) {
+        if (index >= 0) {
             mediaList.remove(index);
         }
         mediaList.add(index, result);
@@ -990,7 +991,27 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_modifyButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
-        // TODO add your handling code here:
+        int ans = JOptionPane.showConfirmDialog(this, "Questa operazione è irreversibile, sei sicuro?");
+        if (ans > 0) {
+            return;
+        }
+        // lo tolgo dal repo, potrei mettere un controllo se qualcosa va storto
+        repository.delete(focused);
+        // lo tolgo dalla lista
+        int index = -1;
+        for (Media media : mediaList) {
+            if (media.getTitolo().equals(focused.getTitolo())) {
+                index = mediaList.indexOf(media);
+            }
+        }
+        if (index >= 0) {
+            mediaList.remove(index);
+        }
+        updateView();
+        jPanel4.setVisible(true);
+        jPanel5.setVisible(false);
+        jPanel6.setVisible(false);
+        jPanel7.setVisible(false);
     }//GEN-LAST:event_deleteButtonActionPerformed
 
     /**

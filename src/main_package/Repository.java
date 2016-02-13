@@ -130,6 +130,7 @@ public class Repository {
                 id = Integer.parseInt(split[0]);
                 line = br.readLine();
             }
+            br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -162,16 +163,69 @@ public class Repository {
             br.close();
             bw.close();
             new File(COLLECTIONS_PATH + "/tmp").delete();
-/*
-            File oldFile = new File(COLLECTIONS_PATH + "/collections");
-            oldFile.delete();
-            File newFile = new File(COLLECTIONS_PATH + "/tmp");
-            newFile.renameTo(oldFile);
-*/
         } catch (Exception e) {
             e.printStackTrace();
         }
         return true;
+    }
+
+    public boolean delete(Media media) {
+        File filmFolder = new File(FILMS_PATH);
+        File ebookFolder = new File(EBOOKS_PATH);
+        File audioFolder = new File(AUDIO_PATH);
+        String path = "";
+        try {
+            // per i film
+            for (final File fileEntry : filmFolder.listFiles()) {
+                BufferedReader reader = new BufferedReader(new FileReader(fileEntry));
+                // attributi comuni a ogni media
+                String[] split = reader.readLine().split(SEPARATOR);
+                String titolo = split[1];
+                String autore = split[2];
+                if (titolo.equals(media.getTitolo()) && autore.equals(media.getAutore())) {
+                    // ho trovato il file che voglio cancellare
+                    path = fileEntry.getPath();
+                }
+                reader.close();
+            }
+
+            // per ebook
+            for (final File fileEntry : ebookFolder.listFiles()) {
+                BufferedReader reader = new BufferedReader(new FileReader(fileEntry));
+                // attributi comuni a ogni media
+                String[] split = reader.readLine().split(SEPARATOR);
+                String titolo = split[1];
+                String autore = split[2];
+                if (titolo.equals(media.getTitolo()) && autore.equals(media.getAutore())) {
+                    // ho trovato il file che voglio cancellare
+                    path = fileEntry.getPath();
+                }
+                reader.close();
+            }
+            // per audio
+            for (final File fileEntry : audioFolder.listFiles()) {
+                BufferedReader reader = new BufferedReader(new FileReader(fileEntry));
+                // attributi comuni a ogni media
+                String[] split = reader.readLine().split(SEPARATOR);
+                String titolo = split[1];
+                String autore = split[2];
+                if (titolo.equals(media.getTitolo()) && autore.equals(media.getAutore())) {
+                    // ho trovato il file che voglio cancellare
+                    path = fileEntry.getPath();
+                }
+                reader.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        if (new File(path).delete()) {
+            System.out.println("deleted");
+            return true;
+        }
+        // file not found
+        System.out.println("file not found");
+        return false;
     }
 
     // non si può modificare titolo e autore
@@ -182,13 +236,12 @@ public class Repository {
         File filmFolder = new File(FILMS_PATH);
         File ebookFolder = new File(EBOOKS_PATH);
         File audioFolder = new File(AUDIO_PATH);
-        try {
+        try {            
             // per ogni media modificato modifica il filesystem che lo contiene
             for (Media media : medias) {
-                BufferedReader reader;
                 // per i film
                 for (final File fileEntry : filmFolder.listFiles()) {
-                    reader = new BufferedReader(new FileReader(fileEntry));
+                    BufferedReader reader = new BufferedReader(new FileReader(fileEntry));
                     // attributi comuni a ogni media
                     String[] split = reader.readLine().split(SEPARATOR);
                     String titolo = split[1];
@@ -199,10 +252,11 @@ public class Repository {
                         bw.write(media.toString());
                         bw.close();
                     }
+                    reader.close();
                 }
                 // per ebook
                 for (final File fileEntry : ebookFolder.listFiles()) {
-                    reader = new BufferedReader(new FileReader(fileEntry));
+                    BufferedReader reader = new BufferedReader(new FileReader(fileEntry));
                     // attributi comuni a ogni media
                     String[] split = reader.readLine().split(SEPARATOR);
                     String titolo = split[1];
@@ -213,10 +267,11 @@ public class Repository {
                         bw.write(media.toString());
                         bw.close();
                     }
+                    reader.close();
                 }
                 // per audio
                 for (final File fileEntry : audioFolder.listFiles()) {
-                    reader = new BufferedReader(new FileReader(fileEntry));
+                    BufferedReader reader = new BufferedReader(new FileReader(fileEntry));
                     // attributi comuni a ogni media
                     String[] split = reader.readLine().split(SEPARATOR);
                     String titolo = split[1];
@@ -227,6 +282,7 @@ public class Repository {
                         bw.write(media.toString());
                         bw.close();
                     }
+                    reader.close();
                 }
             }
         } catch (Exception e) {
@@ -413,13 +469,12 @@ public class Repository {
     }
 
     private LinkedList<Media> listFilesForFolder(final File folder) throws FileNotFoundException, IOException {
-        BufferedReader reader;
         for (final File fileEntry : folder.listFiles()) {
             LinkedList<Media> temp = new LinkedList<Media>();
             if (fileEntry.isDirectory()) {
                 listFilesForFolder(fileEntry);
             } else {
-                reader = new BufferedReader(new FileReader(fileEntry));
+                BufferedReader reader = new BufferedReader(new FileReader(fileEntry));
                 // attributi comuni a ogni media
                 String[] split = reader.readLine().split(SEPARATOR);
                 String url = split[0];
@@ -447,6 +502,7 @@ public class Repository {
                         String lingua = split[8];
                         Ebook newEbook = new Ebook(url, autore, titolo, genere, anno, idCollezione, casaEditrice, formatoFile, lingua);
                         temp.add(newEbook);
+                        reader.close();
                     }
                     break;
                     case "films": {
@@ -457,7 +513,7 @@ public class Repository {
                         String lingua = split[10];
                         Film newFilm = new Film(url, autore, titolo, genere, anno, idCollezione, regista, attori, descrizione, commenti, lingua);
                         temp.add(newFilm);
-
+                        reader.close();
                     }
                     break;
                     case "audio": {
@@ -468,6 +524,7 @@ public class Repository {
                         String bitRate = split[10];
                         Audio newAudio = new Audio(url, autore, titolo, genere, anno, idCollezione, produttore, album, numeroTraccia, durata, bitRate);
                         temp.add(newAudio);
+                        reader.close();
                     }
                     break;
                 }
