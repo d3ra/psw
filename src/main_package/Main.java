@@ -743,6 +743,11 @@ public class Main extends javax.swing.JFrame {
         jMenu1.add(jMenuItem1);
 
         jMenuItem2.setText("New Collection...");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem2);
 
         jMenuBar1.add(jMenu1);
@@ -853,6 +858,20 @@ public class Main extends javax.swing.JFrame {
     private void genreCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_genreCheckBoxActionPerformed
         dynamicGenreSelection();
     }//GEN-LAST:event_genreCheckBoxActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        NewCollectionDialog newCollectionDialog = new NewCollectionDialog(this, true, repository);
+        newCollectionDialog.setVisible(true);
+        // l'utente crea un nuovo collezione
+        // .
+        // .
+        // .
+        // prendiamo quella collezione e la mandiamo a repo
+        LinkedList<Media> newMediaList = newCollectionDialog.getData();
+        mediaList = newMediaList;
+        repository.modify(newMediaList);
+        updateView();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     /**
      * @param args the command line arguments

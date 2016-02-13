@@ -119,6 +119,112 @@ public class Repository {
 
     }
 
+    // return next collection id
+    public int getNextCollectionId() {
+        int id = - 1;
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(new File(COLLECTIONS_PATH + "/collections")));
+            String line = br.readLine();
+            while (line != null) {
+                String[] split = line.split(SEPARATOR);
+                id = Integer.parseInt(split[0]);
+                line = br.readLine();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return id + 1;
+    }
+
+    // aggiunge una riga a collections
+    // QUESTO é SBAGLIATO PER ORAAAAAAAA e quidni anche il metodo subito sopra non funziona bene TODO
+    public boolean createNewCollection(String collectionName, int collectionId, String type) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(new File(COLLECTIONS_PATH + "/collections")));
+            BufferedWriter bw = new BufferedWriter(new FileWriter(new File(COLLECTIONS_PATH + "/tmp")));
+            String line = "";
+            while (br.readLine() != null) {
+                bw.write(line);
+                bw.newLine();
+            }
+            bw.write(collectionId + SEPARATOR + collectionName + SEPARATOR + type);
+            bw.newLine();
+            br.close();
+            bw.close();
+
+            File oldFile = new File(COLLECTIONS_PATH + "/collections");
+            oldFile.delete();
+            File newFile = new File(COLLECTIONS_PATH + "/tmp");
+            newFile.renameTo(oldFile);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    // non si può modificare titolo e autore
+    public boolean modify(LinkedList<Media> medias) {
+        if (medias.size() == 0) {
+            return false;
+        }
+        File filmFolder = new File(FILMS_PATH);
+        File ebookFolder = new File(EBOOKS_PATH);
+        File audioFolder = new File(AUDIO_PATH);
+        try {
+            // per ogni media modificato modifica il filesystem che lo contiene
+            for (Media media : medias) {
+                BufferedReader reader;
+                // per i film
+                for (final File fileEntry : filmFolder.listFiles()) {
+                    reader = new BufferedReader(new FileReader(fileEntry));
+                    // attributi comuni a ogni media
+                    String[] split = reader.readLine().split(SEPARATOR);
+                    String titolo = split[1];
+                    String autore = split[2];
+                    if (titolo.equals(media.getTitolo())) {
+                        // magari devo smettere di leggere se voglio scrivere
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(fileEntry));
+                        bw.write(media.toString());
+                        bw.close();
+                    }
+                }
+                // per ebook
+                for (final File fileEntry : ebookFolder.listFiles()) {
+                    reader = new BufferedReader(new FileReader(fileEntry));
+                    // attributi comuni a ogni media
+                    String[] split = reader.readLine().split(SEPARATOR);
+                    String titolo = split[1];
+                    String autore = split[2];
+                    if (titolo.equals(media.getTitolo())) {
+                        // magari devo smettere di leggere se voglio scrivere
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(fileEntry));
+                        bw.write(media.toString());
+                        bw.close();
+                    }
+                }
+                // per audio
+                for (final File fileEntry : audioFolder.listFiles()) {
+                    reader = new BufferedReader(new FileReader(fileEntry));
+                    // attributi comuni a ogni media
+                    String[] split = reader.readLine().split(SEPARATOR);
+                    String titolo = split[1];
+                    String autore = split[2];
+                    if (titolo.equals(media.getTitolo())) {
+                        // magari devo smettere di leggere se voglio scrivere
+                        BufferedWriter bw = new BufferedWriter(new FileWriter(fileEntry));
+                        bw.write(media.toString());
+                        bw.close();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
     public boolean addMedia(Media media) {
         if (media == null) {
             return false;
@@ -222,7 +328,7 @@ public class Repository {
                     // se nella scheda non è presente l'anno e anno richiesto 0 -> 2016 ritorno comunque
                     if (from == 0 && to == 2016) {
                         result.add(media);
-                        
+
                     }
                 }
                 // verifica condizione anno
@@ -273,7 +379,7 @@ public class Repository {
     }
 
     // type deve essere: film, ebook o audio
-    private LinkedList<Media> getMedias(String type) {
+    public LinkedList<Media> getMedias(String type) {
         LinkedList<Media> result = null;
         // scorro tutti i file nelle directory e creo oggetti da mandare al main
         System.out.println("type = " + type);

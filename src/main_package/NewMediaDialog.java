@@ -48,7 +48,7 @@ public class NewMediaDialog extends javax.swing.JDialog {
         jPanel2.setVisible(false);
         jPanel3.setVisible(false);
         jPanel4.setVisible(true);
-        
+
     }
 
     /**
@@ -453,6 +453,12 @@ public class NewMediaDialog extends javax.swing.JDialog {
         }
         String genere = jTextField4.getText();
         String anno = jTextField5.getText();
+        // serve l'&& per non arrivare all'ultimo controllo con una stringa
+        if ((anno.matches("[0-9]+") && anno.length() == 4) && Integer.parseInt(anno) < 2016) {
+        } else {
+            JOptionPane.showMessageDialog(rootPane, "Please insert a valid year", "Errore", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         jTextField1.setEnabled(false);
         jTextField2.setEnabled(false);
         jTextField3.setEnabled(false);
