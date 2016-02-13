@@ -20,6 +20,8 @@ public class Media {
     private String genere;
     private String anno;
     private int idCollezione;
+    
+    public Media() {}
 
     public Media(String url, String autore, String titolo, String genere, String anno, int idCollezione) {
         this.url = url;
