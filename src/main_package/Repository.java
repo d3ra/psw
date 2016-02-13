@@ -137,26 +137,37 @@ public class Repository {
     }
 
     // aggiunge una riga a collections
-    // QUESTO é SBAGLIATO PER ORAAAAAAAA e quidni anche il metodo subito sopra non funziona bene TODO
     public boolean createNewCollection(String collectionName, int collectionId, String type) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(new File(COLLECTIONS_PATH + "/collections")));
             BufferedWriter bw = new BufferedWriter(new FileWriter(new File(COLLECTIONS_PATH + "/tmp")));
-            String line = "";
-            while (br.readLine() != null) {
+            String line = br.readLine();
+            while (line != null) {
                 bw.write(line);
                 bw.newLine();
+                line = br.readLine();
             }
             bw.write(collectionId + SEPARATOR + collectionName + SEPARATOR + type);
             bw.newLine();
             br.close();
             bw.close();
-
+            br = new BufferedReader(new FileReader(new File(COLLECTIONS_PATH + "/tmp")));
+            bw = new BufferedWriter(new FileWriter(new File(COLLECTIONS_PATH + "/collections")));
+            line = br.readLine();
+            while (line != null) {
+                bw.write(line);
+                bw.newLine();
+                line = br.readLine();
+            }
+            br.close();
+            bw.close();
+            new File(COLLECTIONS_PATH + "/tmp").delete();
+/*
             File oldFile = new File(COLLECTIONS_PATH + "/collections");
             oldFile.delete();
             File newFile = new File(COLLECTIONS_PATH + "/tmp");
             newFile.renameTo(oldFile);
-
+*/
         } catch (Exception e) {
             e.printStackTrace();
         }
