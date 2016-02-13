@@ -310,7 +310,9 @@ public class Main extends javax.swing.JFrame {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -843,10 +845,27 @@ public class Main extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem2);
 
+        jMenuItem4.setText("esporta in CSV");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                esportaInCSVActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem4);
+
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jMenu3.setText("Collections");
+
+        jMenuItem3.setText("Show Collections");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
 
@@ -1014,6 +1033,24 @@ public class Main extends javax.swing.JFrame {
         jPanel7.setVisible(false);
     }//GEN-LAST:event_deleteButtonActionPerformed
 
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        // apri dialog che mostra le collezioni
+        ShowCollectionsDialog showCollections = new ShowCollectionsDialog(this, true, repository);
+        showCollections.setVisible(true);
+        // l'utente visualizza le collezioni e sceglie di mostrarne una
+        // .
+        // .
+        // .
+        // prendiamo quella collezione e la mostriamo
+        mediaList = showCollections.getData();
+        updateView();
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void esportaInCSVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_esportaInCSVActionPerformed
+        // con getAll() ho la lista di ogni file
+        // scrivila in un file con la giusta sintassi
+    }//GEN-LAST:event_esportaInCSVActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1056,10 +1093,6 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
-    }
-
-    public boolean createNewCollection(/*tipo dei media nella collezione, no collezioni miste*/) {
-        return true;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1111,10 +1144,12 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel9;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

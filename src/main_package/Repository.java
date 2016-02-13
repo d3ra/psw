@@ -22,13 +22,13 @@ import java.util.LinkedList;
 public class Repository {
 
     // forse così si può risolvere il problema sotto (linux)
-    private static final String MEDIA_PATH = "media";
+    public static final String MEDIA_PATH = "media";
     // funziona solo su windows, testare su linux
-    private static final String FILMS_PATH = "media/films";
-    private static final String EBOOKS_PATH = "media/ebooks";
-    private static final String AUDIO_PATH = "media/audio";
+    public static final String FILMS_PATH = "media/films";
+    public static final String EBOOKS_PATH = "media/ebooks";
+    public static final String AUDIO_PATH = "media/audio";
     // path per il file di collezioni
-    private static final String COLLECTIONS_PATH = "collections";
+    public static final String COLLECTIONS_PATH = "collections";
     // path per i file di controllo
     private static final String CONTROL_FILE_PATH = "control";
 
