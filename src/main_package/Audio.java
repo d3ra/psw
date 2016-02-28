@@ -101,5 +101,29 @@ public class Audio extends Media {
         }
         return super.toString() + SEPARATOR + produttore + SEPARATOR + album + SEPARATOR + numeroTraccia + SEPARATOR + durata + SEPARATOR + bitRate;
     }
+    
+    public String toString(String separator) {
+        String produttore = this.produttore;
+        String album = this.album;
+        String numeroTraccia = this.numeroTraccia;
+        String durata = this.durata;
+        String bitRate = this.bitRate;
+        if (produttore.equals("")) {
+            produttore = "-";
+        }
+        if (album.equals("")) {
+            album = "-";
+        }
+        if (numeroTraccia.equals("")) {
+            numeroTraccia = "-";
+        }
+        if (durata.equals("")) {
+            durata = "-";
+        }
+        if (bitRate.equals("")) {
+            bitRate = "-";
+        }
+        return super.toString(separator) + separator + produttore + separator + album + separator + numeroTraccia + separator + durata + separator + bitRate;
+    }
 
 }

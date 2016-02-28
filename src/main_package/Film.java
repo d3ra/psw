@@ -101,5 +101,29 @@ public class Film extends Media {
         }
         return super.toString() + SEPARATOR + regista + SEPARATOR + attori + SEPARATOR + descrizione + SEPARATOR + commenti + SEPARATOR + lingua;
     }
+    
+    public String toString(String separator) {
+        String regista = this.regista;
+        String attori = this.attori;
+        String descrizione = this.descrizione;
+        String commenti = this.commenti;
+        String lingua = this.lingua;
+        if (regista.equals("")) {
+            regista = "-";
+        }
+        if (attori.equals("")) {
+            attori = "-";
+        }
+        if (descrizione.equals("")) {
+            descrizione = "-";
+        }
+        if (commenti.equals("")) {
+            commenti = "-";
+        }
+        if (lingua.equals("")) {
+            lingua = "-";
+        }
+        return super.toString(separator) + separator + regista + separator + attori + separator + descrizione + separator + commenti + separator + lingua;
+    }
 
 }

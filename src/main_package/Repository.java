@@ -31,6 +31,7 @@ public class Repository {
     public static final String COLLECTIONS_PATH = "collections";
     // path per i file di controllo
     private static final String CONTROL_FILE_PATH = "control";
+    public static final String CSV_PATH = "csv";
 
     // separatore formato
     public static final String SEPARATOR = "\t";
@@ -449,8 +450,6 @@ public class Repository {
     public LinkedList<Media> getMedias(String type) {
         LinkedList<Media> result = null;
         // scorro tutti i file nelle directory e creo oggetti da mandare al main
-        System.out.println("type = " + type);
-        System.out.println("parh = " + MEDIA_PATH + "/" + type);
         try {
             File folder = new File(MEDIA_PATH + "/" + type);
             clearResult();

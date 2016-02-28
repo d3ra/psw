@@ -94,5 +94,16 @@ public class Media {
         }
         return this.url + SEPARATOR + this.titolo + SEPARATOR + this.autore + SEPARATOR + genere + SEPARATOR + anno + SEPARATOR + this.idCollezione;
     }
-
+    
+    public String toString(String separator) {
+        String genere = this.genere;
+        String anno = this.anno;
+        if (genere.equals("")) {
+            genere = "-";
+        }
+        if (anno.equals("")) {
+            anno = "-";
+        }
+        return this.url + separator + this.titolo + separator + this.autore + separator + genere + separator + anno + separator + this.idCollezione;
+    }
 }

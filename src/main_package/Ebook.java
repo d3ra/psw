@@ -67,5 +67,17 @@ public class Ebook extends Media {
         }
         return super.toString() + SEPARATOR + casaEditrice + SEPARATOR + this.formatoFile + SEPARATOR + lingua;
     }
+    
+    public String toString(String separator) {
+        String casaEditrice = this.casaEditrice;
+        String lingua = this.lingua;
+        if (casaEditrice.equals("")) {
+            casaEditrice = "-";
+        }
+        if (lingua.equals("")) {
+            lingua = "-";
+        }
+        return super.toString(separator) + separator + casaEditrice + separator + this.formatoFile + separator + lingua;
+    }
 
 }
